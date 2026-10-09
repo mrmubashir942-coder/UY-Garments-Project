@@ -1,0 +1,7 @@
+{
+  "name": "UY Garments - Garments Management Software",
+  "description": "Comprehensive garments manufacturing and business management software for factory stock, fabric cutting, materials, shop inventory, orders, invoices, dispatch, payments, expenses, and payroll.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
