@@ -409,6 +409,25 @@ export const SettingsModule: React.FC = () => {
               </Button>
             </div>
           </div>
+
+          {/* About Application */}
+          <div className="bg-white border border-neutral-200 rounded-xl p-5 space-y-3 text-xs">
+            <h3 className="font-bold text-sm text-neutral-900">About Application</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center py-1 text-neutral-600 border-b border-neutral-100">
+                <span>Application</span>
+                <span className="font-semibold text-neutral-900">UY Garments ERP</span>
+              </div>
+              <div className="flex justify-between items-center py-1 text-neutral-600 border-b border-neutral-100">
+                <span>Release Version</span>
+                <span className="font-mono text-neutral-700">v2.4.0 Production</span>
+              </div>
+              <div className="flex justify-between items-center py-1 text-neutral-600">
+                <span>Software Developer</span>
+                <span className="font-medium text-neutral-900">Developed by Muhammad Mubashir</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

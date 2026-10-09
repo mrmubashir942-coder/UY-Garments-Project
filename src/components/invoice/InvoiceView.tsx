@@ -253,8 +253,9 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, settings, onB
         </div>
 
         {/* Print Footer Notice */}
-        <div className="mt-8 text-center text-[10px] text-neutral-400 border-t border-neutral-100 pt-3">
-          This is an authentic system generated invoice by UY Garments Management Software.
+        <div className="mt-8 text-[10px] text-neutral-400 border-t border-neutral-100 pt-3 flex flex-col sm:flex-row items-center justify-between gap-1">
+          <span>This is an authentic system generated invoice by UY Garments Management Software.</span>
+          <span className="font-normal text-neutral-400">Developed by Muhammad Mubashir</span>
         </div>
       </div>
     </div>

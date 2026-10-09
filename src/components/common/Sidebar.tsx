@@ -127,9 +127,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         {/* Footer info */}
-        <div className="p-4 border-t border-neutral-900 text-[11px] text-neutral-400 flex items-center justify-between">
-          <span>UY Garments v2.4</span>
-          <span className="text-neutral-500">All Systems Normal</span>
+        <div className="p-4 border-t border-neutral-900 text-[11px] text-neutral-400 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span>UY Garments v2.4</span>
+            <span className="text-neutral-500">All Systems Normal</span>
+          </div>
+          <div className="pt-1.5 border-t border-neutral-900 text-[10px] text-neutral-400 font-normal tracking-wide">
+            Developed by Muhammad Mubashir
+          </div>
         </div>
       </aside>
     </>

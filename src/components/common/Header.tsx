@@ -109,6 +109,11 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, activeModuleNam
                     </button>
                   ))}
                 </div>
+
+                <div className="px-4 py-2 text-[10px] text-neutral-400 border-t border-neutral-100 flex items-center justify-between">
+                  <span>UY Garments ERP</span>
+                  <span>Developed by Muhammad Mubashir</span>
+                </div>
               </div>
             </>
           )}
