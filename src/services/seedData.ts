@@ -1052,7 +1052,7 @@ export const INITIAL_SETTINGS: CompanySettings = {
   email: 'info@uygarments.com',
   website: 'www.uygarments.com',
   taxRegistrationNumber: 'STRN-UY-882901-7',
-  currencySymbol: '$',
+  currencySymbol: 'Rs.',
   orderPrefix: 'UY-ORD-',
   invoicePrefix: 'UY-INV-',
   expensePrefix: 'UY-EXP-',

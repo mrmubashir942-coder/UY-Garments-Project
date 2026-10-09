@@ -98,7 +98,14 @@ class DatabaseService {
           expenses: parsed.expenses || tagDemo(INITIAL_EXPENSES),
           employees: parsed.employees || tagDemo(INITIAL_EMPLOYEES),
           salaryRecords: parsed.salaryRecords || tagDemo(INITIAL_SALARY_RECORDS),
-          settings: parsed.settings || INITIAL_SETTINGS,
+          settings: {
+            ...INITIAL_SETTINGS,
+            ...(parsed.settings || {}),
+            currencySymbol:
+              !parsed.settings?.currencySymbol || parsed.settings.currencySymbol === '$'
+                ? 'Rs.'
+                : parsed.settings.currencySymbol,
+          },
         };
       }
     } catch (e) {

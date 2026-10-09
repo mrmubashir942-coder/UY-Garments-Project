@@ -4,6 +4,7 @@ import { FabricItem, CuttingRecord, Collection, Order } from '../../types';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import { ConfirmDialog } from '../common/ConfirmDialog';
+import { formatPKR, CURRENCY_SYMBOL } from '../../utils/currency';
 import {
   Plus,
   Scissors,
@@ -21,7 +22,7 @@ export const FabricStock: React.FC = () => {
   const [cuttings, setCuttings] = useState<CuttingRecord[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [currency, setCurrency] = useState('$');
+  const [currency, setCurrency] = useState(CURRENCY_SYMBOL);
 
   const [activeTab, setActiveTab] = useState<'fabric-batches' | 'cutting-records'>('fabric-batches');
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,7 +95,7 @@ export const FabricStock: React.FC = () => {
     setCuttings(db.getCuttingRecords());
     setCollections(db.getCollections());
     setOrders(db.getOrders());
-    setCurrency(db.getSettings().currencySymbol || '$');
+    setCurrency(db.getSettings().currencySymbol || CURRENCY_SYMBOL);
   };
 
   useEffect(() => {
@@ -363,7 +364,7 @@ export const FabricStock: React.FC = () => {
             Fabric Asset Valuation
           </div>
           <div className="text-2xl font-black text-neutral-900 mt-1 font-mono">
-            {currency}{totalInventoryValuation.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {formatPKR(totalInventoryValuation)}
           </div>
         </div>
       </div>
@@ -422,7 +423,7 @@ export const FabricStock: React.FC = () => {
                   <th className="py-3 px-4 text-right">Received</th>
                   <th className="py-3 px-4 text-right">Consumed</th>
                   <th className="py-3 px-4 text-right">Remaining</th>
-                  <th className="py-3 px-4 text-right">Rate / kg</th>
+                  <th className="py-3 px-4 text-right">Rate / kg ({currency})</th>
                   <th className="py-3 px-4">Supplier</th>
                   <th className="py-3 px-4 text-center">Actions</th>
                 </tr>
@@ -461,7 +462,7 @@ export const FabricStock: React.FC = () => {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-right font-mono text-neutral-700">
-                        {currency}{f.purchaseRatePerKg.toFixed(2)}
+                        {formatPKR(f.purchaseRatePerKg)}
                       </td>
                       <td className="py-3 px-4 text-neutral-600 truncate max-w-xs">{f.supplier}</td>
                       <td className="py-3 px-4 text-center">

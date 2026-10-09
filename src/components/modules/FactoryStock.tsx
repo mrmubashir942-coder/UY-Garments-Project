@@ -4,6 +4,7 @@ import { StockItem, Collection } from '../../types';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import { ConfirmDialog } from '../common/ConfirmDialog';
+import { formatPKR, CURRENCY_SYMBOL } from '../../utils/currency';
 import {
   Plus,
   Search,
@@ -18,7 +19,7 @@ import {
 export const FactoryStock: React.FC = () => {
   const [items, setItems] = useState<StockItem[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
-  const [currency, setCurrency] = useState('$');
+  const [currency, setCurrency] = useState(CURRENCY_SYMBOL);
 
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState('');
@@ -64,7 +65,7 @@ export const FactoryStock: React.FC = () => {
   const loadData = () => {
     setItems(db.getFactoryStock());
     setCollections(db.getCollections());
-    setCurrency(db.getSettings().currencySymbol || '$');
+    setCurrency(db.getSettings().currencySymbol || CURRENCY_SYMBOL);
   };
 
   useEffect(() => {
@@ -251,7 +252,7 @@ export const FactoryStock: React.FC = () => {
             Cost Valuation
           </div>
           <div className="text-2xl font-black text-neutral-900 mt-1 font-mono">
-            {currency}{totalCostValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {formatPKR(totalCostValue)}
           </div>
         </div>
         <div className="bg-white border border-neutral-200 rounded-xl p-4">
@@ -259,7 +260,7 @@ export const FactoryStock: React.FC = () => {
             Wholesale / Retail Valuation
           </div>
           <div className="text-2xl font-black text-neutral-900 mt-1 font-mono">
-            {currency}{totalRetailValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {formatPKR(totalRetailValue)}
           </div>
         </div>
       </div>
@@ -377,13 +378,13 @@ export const FactoryStock: React.FC = () => {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right font-mono text-neutral-600">
-                      {currency}{item.costPrice.toFixed(2)}
+                      {formatPKR(item.costPrice)}
                     </td>
                     <td className="py-3 px-4 text-right font-mono font-semibold text-neutral-900">
-                      {currency}{item.sellingPrice.toFixed(2)}
+                      {formatPKR(item.sellingPrice)}
                     </td>
                     <td className="py-3 px-4 text-right font-mono font-bold text-neutral-900">
-                      {currency}{(item.quantity * item.costPrice).toFixed(2)}
+                      {formatPKR(item.quantity * item.costPrice)}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <div className="flex items-center justify-center gap-1">

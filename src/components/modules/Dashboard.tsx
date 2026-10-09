@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { NavModule } from '../common/Sidebar';
 import { ConfirmDialog } from '../common/ConfirmDialog';
+import { formatPKR } from '../../utils/currency';
 
 interface DashboardProps {
   onNavigate: (module: NavModule) => void;
@@ -266,19 +267,19 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           />
           <StatCard
             label="Outstanding Receivables"
-            value={`${currency}${outstandingPayments.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            value={formatPKR(outstandingPayments)}
             subtext="Unpaid & partial order balances"
             icon={AlertTriangle}
           />
           <StatCard
             label="Payments Received"
-            value={`${currency}${totalPaymentsReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            value={formatPKR(totalPaymentsReceived)}
             subtext={`${data.payments.length} ledger receipts recorded`}
             icon={CreditCard}
           />
           <StatCard
             label="Today's Expenses"
-            value={`${currency}${todaysExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            value={formatPKR(todaysExpenses)}
             subtext="Daily factory disbursements"
             icon={Receipt}
           />
@@ -319,13 +320,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                   </div>
                   <div className="text-right">
                     <div className="font-mono font-bold text-neutral-900">
-                      {currency}{order.totalAmount.toFixed(2)}
+                      {formatPKR(order.totalAmount)}
                     </div>
                     <div className="text-[11px] font-medium text-neutral-600 mt-0.5">
                       {order.status}
                     </div>
                     <div className="text-[10px] text-neutral-400 mt-0.5">
-                      Bal: {currency}{order.remainingBalance.toFixed(2)}
+                      Bal: {formatPKR(order.remainingBalance)}
                     </div>
                   </div>
                 </div>

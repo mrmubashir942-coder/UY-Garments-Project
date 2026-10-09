@@ -4,6 +4,7 @@ import { MaterialItem, MaterialCategory, MaterialUsage } from '../../types';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import { ConfirmDialog } from '../common/ConfirmDialog';
+import { formatPKR, CURRENCY_SYMBOL } from '../../utils/currency';
 import {
   Plus,
   Boxes,
