@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './services/db';
+import { auth } from './services/auth';
+import { LoginPage } from './components/auth/LoginPage';
 import { Sidebar, NavModule } from './components/common/Sidebar';
 import { Header } from './components/common/Header';
 import { Dashboard } from './components/modules/Dashboard';
@@ -16,6 +18,9 @@ import { EmployeesModule } from './components/modules/EmployeesModule';
 import { SettingsModule } from './components/modules/SettingsModule';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() =>
+    auth.isAuthenticated()
+  );
   const [activeModule, setActiveModule] = useState<NavModule>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [customLogoUrl, setCustomLogoUrl] = useState<string | undefined>(
@@ -23,10 +28,23 @@ export default function App() {
   );
 
   useEffect(() => {
-    return db.subscribe(() => {
+    const unsubDb = db.subscribe(() => {
       setCustomLogoUrl(db.getSettings().customLogoUrl);
     });
+    const unsubAuth = auth.subscribe((authed) => {
+      setIsAuthenticated(authed);
+    });
+
+    return () => {
+      unsubDb();
+      unsubAuth();
+    };
   }, []);
+
+  // Protected Routes: Unauthenticated visitors cannot access dashboard or business records
+  if (!isAuthenticated) {
+    return <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />;
+  }
 
   const moduleTitles: Record<NavModule, string> = {
     dashboard: 'Dashboard',
@@ -83,6 +101,7 @@ export default function App() {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         customLogoUrl={customLogoUrl}
+        onLogout={() => auth.logout()}
       />
 
       {/* Main Workspace */}
@@ -90,6 +109,7 @@ export default function App() {
         <Header
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           activeModuleName={moduleTitles[activeModule]}
+          onNavigateToSettings={() => setActiveModule('settings')}
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto print:p-0 print:m-0 print:max-w-none">

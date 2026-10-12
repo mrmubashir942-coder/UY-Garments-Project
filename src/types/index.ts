@@ -404,5 +404,5 @@ export interface AppUser {
   id: string;
   username: string;
   name: string;
-  role: 'Owner' | 'Factory Manager' | 'Accounts Staff' | 'Supervisor';
+  role: 'OWNER' | 'Owner' | 'Factory Manager' | 'Accounts Staff' | 'Supervisor' | string;
 }

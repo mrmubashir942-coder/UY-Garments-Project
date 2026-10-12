@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../services/db';
+import { auth, OWNER_USER } from '../../services/auth';
 import { CompanySettings } from '../../types';
 import { Button } from '../common/Button';
 import { ConfirmDialog } from '../common/ConfirmDialog';
@@ -15,6 +16,10 @@ import {
   FileCode,
   Image,
   CheckCircle,
+  KeyRound,
+  Lock,
+  CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 
 export const SettingsModule: React.FC = () => {
@@ -22,6 +27,16 @@ export const SettingsModule: React.FC = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [importStatus, setImportStatus] = useState<string | null>(null);
+
+  // Owner Password Management State
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordStatus, setPasswordStatus] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   useEffect(() => {
     return db.subscribe(() => {
@@ -85,6 +100,61 @@ export const SettingsModule: React.FC = () => {
     db.resetToDefaults();
     setIsResetConfirmOpen(false);
     alert('Database successfully restored to original factory baseline state!');
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordStatus(null);
+
+    if (!currentPassword.trim()) {
+      setPasswordStatus({
+        type: 'error',
+        message: 'Please enter your current master password.',
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordStatus({
+        type: 'error',
+        message: 'New password must contain at least 6 characters.',
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordStatus({
+        type: 'error',
+        message: 'New password and confirmation do not match.',
+      });
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      const res = await auth.changePassword(currentPassword, newPassword);
+      if (res.success) {
+        setPasswordStatus({
+          type: 'success',
+          message: 'Master password successfully updated! Next login will require the new password.',
+        });
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        setPasswordStatus({
+          type: 'error',
+          message: res.error || 'Failed to update password. Verify current password.',
+        });
+      }
+    } catch {
+      setPasswordStatus({
+        type: 'error',
+        message: 'An unexpected error occurred while updating password.',
+      });
+    } finally {
+      setIsChangingPassword(false);
+    }
   };
 
   return (
@@ -362,6 +432,120 @@ export const SettingsModule: React.FC = () => {
                 </button>
               )}
             </div>
+          </div>
+
+          {/* Owner Account & Security */}
+          <div className="bg-white border border-neutral-200 rounded-xl p-6 space-y-4 text-xs">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-sm text-neutral-900">Owner Account & Security</h3>
+                <p className="text-neutral-500 text-[11px] mt-0.5">
+                  Single-owner master credentials & password management.
+                </p>
+              </div>
+              <div className="w-7 h-7 rounded-full bg-neutral-950 text-white flex items-center justify-center text-[10px] font-bold">
+                UY
+              </div>
+            </div>
+
+            <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200 space-y-1.5 text-neutral-700">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-500">Authorised Owner:</span>
+                <span className="font-semibold text-neutral-950">{OWNER_USER.name}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-500">Username:</span>
+                <span className="font-mono text-neutral-950 font-semibold">{OWNER_USER.username}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-500">Account Role:</span>
+                <span className="font-mono text-neutral-900 bg-neutral-200/70 px-1.5 py-0.5 rounded text-[10px]">
+                  {OWNER_USER.role} (Master Access)
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-500">Access Mode:</span>
+                <span className="text-emerald-700 font-medium flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Single Authorised Account
+                </span>
+              </div>
+            </div>
+
+            <form onSubmit={handlePasswordChange} className="space-y-3 pt-2 border-t border-neutral-100">
+              <div className="font-semibold text-neutral-900 flex items-center gap-1.5">
+                <KeyRound className="w-3.5 h-3.5 text-neutral-800" />
+                <span>Change Master Password</span>
+              </div>
+
+              {passwordStatus && (
+                <div
+                  className={`p-2.5 rounded-lg border flex items-start gap-2 ${
+                    passwordStatus.type === 'success'
+                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                      : 'bg-red-50 border-red-300 text-red-800'
+                  }`}
+                >
+                  {passwordStatus.type === 'success' ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                  ) : (
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                  )}
+                  <span className="text-[11px] leading-snug">{passwordStatus.message}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[11px] font-medium text-neutral-700 mb-1">
+                  Current Master Password
+                </label>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Enter current password"
+                  className="w-full px-2.5 py-1.5 border border-neutral-300 rounded text-xs bg-white text-neutral-900 focus:outline-none focus:border-neutral-900"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[11px] font-medium text-neutral-700 mb-1">
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Min 6 characters"
+                    className="w-full px-2.5 py-1.5 border border-neutral-300 rounded text-xs bg-white text-neutral-900 focus:outline-none focus:border-neutral-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-medium text-neutral-700 mb-1">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Repeat new password"
+                    className="w-full px-2.5 py-1.5 border border-neutral-300 rounded text-xs bg-white text-neutral-900 focus:outline-none focus:border-neutral-900"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                icon={Lock}
+                disabled={isChangingPassword}
+                className="w-full justify-center bg-neutral-950 text-white hover:bg-neutral-900 mt-1"
+              >
+                {isChangingPassword ? 'Updating Master Password...' : 'Update Master Password'}
+              </Button>
+            </form>
           </div>
 
           {/* Database Backup & Maintenance */}

@@ -14,6 +14,7 @@ import {
   UserCheck,
   Settings,
   X,
+  LogOut,
 } from 'lucide-react';
 
 export type NavModule =
@@ -36,6 +37,7 @@ interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   customLogoUrl?: string;
+  onLogout?: () => void;
 }
 
 interface NavItem {
@@ -65,6 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
   onClose,
   customLogoUrl,
+  onLogout,
 }) => {
   return (
     <>
@@ -125,6 +128,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
         </nav>
+
+        {/* Sign Out Option */}
+        {onLogout && (
+          <div className="px-3 py-2 border-t border-neutral-900">
+            <button
+              onClick={() => {
+                onClose();
+                onLogout();
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-neutral-400 hover:text-red-400 hover:bg-neutral-900 transition-colors cursor-pointer"
+            >
+              <LogOut className="w-4 h-4 text-neutral-500 group-hover:text-red-400" />
+              <span>Sign Out of Owner Account</span>
+            </button>
+          </div>
+        )}
 
         {/* Footer info */}
         <div className="p-4 border-t border-neutral-900 text-[11px] text-neutral-400 space-y-1.5">
