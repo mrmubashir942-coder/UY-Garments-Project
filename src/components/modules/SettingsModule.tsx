@@ -404,11 +404,11 @@ export const SettingsModule: React.FC = () => {
           <div className="bg-white border border-neutral-200 rounded-xl p-6 space-y-4 text-xs">
             <h3 className="font-bold text-sm text-neutral-900">Official Brand Asset</h3>
             <p className="text-neutral-500 text-[11px]">
-              UY Garments official emerald green & metallic gold artwork. Retains brand identity while UI remains sleek monochrome.
+              UY Garments official brand logo asset. Pitch-black background, golden crown, vibrant green UY emblem, and white GARMENTS typography.
             </p>
 
             <div className="p-6 bg-neutral-950 rounded-xl flex items-center justify-center">
-              <UYGarmentsLogo size="lg" showText={true} customUrl={settings.customLogoUrl} />
+              <UYGarmentsLogo size="lg" showText={true} textColor="white" customUrl={settings.customLogoUrl} />
             </div>
 
             <div className="space-y-2">
@@ -428,7 +428,7 @@ export const SettingsModule: React.FC = () => {
                   }}
                   className="text-xs text-neutral-600 hover:text-neutral-950 underline cursor-pointer"
                 >
-                  Reset to Official Emerald & Gold UY Crest
+                  Reset to Official UY Garments Logo
                 </button>
               )}
             </div>

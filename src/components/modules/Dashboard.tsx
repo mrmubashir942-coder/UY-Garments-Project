@@ -22,6 +22,7 @@ import {
 import { NavModule } from '../common/Sidebar';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { formatPKR } from '../../utils/currency';
+import { UYGarmentsLogo } from '../../assets/logo';
 
 interface DashboardProps {
   onNavigate: (module: NavModule) => void;
@@ -120,13 +121,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
     <div className="space-y-8">
       {/* Welcome & Quick Action Bar */}
       <div className="bg-white border border-neutral-200 rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold tracking-tight text-neutral-950">
-            UY Garments Operations Command
-          </h2>
-          <p className="text-xs text-neutral-500 mt-1">
-            Real-time manufacturing, inventory valuation, active order dispatch, and financial overview.
-          </p>
+        <div className="flex items-center gap-4">
+          <UYGarmentsLogo size="md" showText={false} customUrl={data.settings.customLogoUrl} />
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-neutral-950">
+              UY Garments Operations Command
+            </h2>
+            <p className="text-xs text-neutral-500 mt-1">
+              Real-time manufacturing, inventory valuation, active order dispatch, and financial overview.
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button

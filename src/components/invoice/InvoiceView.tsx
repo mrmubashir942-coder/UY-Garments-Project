@@ -49,8 +49,8 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, settings, onB
         {/* Header: Company & Logo + Invoice Meta */}
         <div className="flex flex-col sm:flex-row justify-between items-start gap-8 pb-8 border-b-2 border-neutral-900">
           <div>
-            {/* Logo preserving original green & gold artwork */}
-            <UYGarmentsLogo size="lg" showText={true} customUrl={settings.customLogoUrl} />
+            {/* Exact original UY Garments Logo */}
+            <UYGarmentsLogo size="lg" showText={true} textColor="dark" customUrl={settings.customLogoUrl} />
             
             <div className="mt-4 text-xs text-neutral-600 space-y-1 max-w-xs">
               <p className="font-semibold text-neutral-900">{settings.companyName}</p>

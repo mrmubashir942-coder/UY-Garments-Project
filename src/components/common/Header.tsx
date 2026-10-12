@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { auth, OWNER_USER } from '../../services/auth';
+import { UYGarmentsLogo } from '../../assets/logo';
 import { Menu, Shield, ChevronDown, LogOut, Settings as SettingsIcon, CheckCircle2 } from 'lucide-react';
 
 interface HeaderProps {
@@ -38,6 +39,9 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <Menu className="w-5 h-5" />
         </button>
+        <div className="md:hidden">
+          <UYGarmentsLogo size="sm" showText={false} />
+        </div>
         <div>
           <h1 className="text-lg md:text-xl font-bold tracking-tight text-neutral-900 capitalize">
             {activeModuleName}

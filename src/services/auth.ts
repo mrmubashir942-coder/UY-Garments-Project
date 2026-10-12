@@ -116,13 +116,70 @@ export class AuthService {
       };
     }
 
+    // 1. Attempt Server-Side Production Authentication (Netlify Functions / API)
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: cleanId, password: cleanPass }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success && result.token) {
+          this.failedAttempts = 0;
+          this.lockoutUntil = 0;
+          const session: AuthSession = {
+            token: result.token,
+            createdAt: Date.now(),
+            expiresAt: result.expiresAt || Date.now() + 7 * 24 * 60 * 60 * 1000,
+            userId: OWNER_USER.id,
+          };
+          localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+          this.notify();
+          return { success: true };
+        }
+      } else if (response.status === 401 || response.status === 400 || response.status === 403) {
+        // Production backend explicitly rejected credentials
+        const result = await response.json().catch(() => ({}));
+        this.registerFailedAttempt();
+        return {
+          success: false,
+          error: result.error || 'Invalid password. Access denied for unauthorised entry.',
+        };
+      }
+    } catch {
+      // Backend unreachable (offline or running in standalone Vite preview without serverless function)
+      // Fall through to client verification.
+    }
+
+    // 2. Client-side Verification Fallback
+    const envPass = (import.meta as any).env?.VITE_OWNER_PASSWORD;
+    const envPassHash = (import.meta as any).env?.VITE_OWNER_PASSWORD_HASH;
+
+    let isMatch = false;
+
+    // Check direct match if VITE_OWNER_PASSWORD was supplied during build
+    if (envPass && cleanPass === envPass) {
+      isMatch = true;
+    }
+
     // Secure cryptographic salted hash verification
     const enteredHash = await hashPassword(cleanPass);
     const customStoredHash = localStorage.getItem(CREDS_KEY);
 
-    const isMatch = customStoredHash
-      ? enteredHash === customStoredHash
-      : AUTHORIZED_SALTED_HASHES.includes(enteredHash);
+    if (customStoredHash && enteredHash === customStoredHash) {
+      isMatch = true;
+    } else if (envPassHash && enteredHash === envPassHash) {
+      isMatch = true;
+    } else if (AUTHORIZED_SALTED_HASHES.includes(enteredHash)) {
+      isMatch = true;
+    }
 
     if (!isMatch) {
       this.registerFailedAttempt();
